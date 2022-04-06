@@ -7,8 +7,8 @@ import (
 )
 
 func LeerTexto(data string, listaDiscos *[100]Mount) {
-	fmt.Println("desde LeerTexto: " + data)
-	fmt.Println(string(listaDiscos[0].Estado[:]))
+	//fmt.Println("desde LeerTexto: " + data)
+	//fmt.Println(string(listaDiscos[0].Estado[:]))
 	//para leer la cadena enviada
 	ListaComandos := list.New()
 	lineaComando := strings.Split(data, "\n")
