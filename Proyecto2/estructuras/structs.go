@@ -113,3 +113,69 @@ func BytesNombreParticion(data [16]byte) string {
 func ConvertData(data [64]byte) string {
 	return string(data[:])
 }
+
+// encapsular los comandos
+type PropMkdisk struct {
+	setSize int
+	setFit  string
+	setUnit string
+	setPath string
+}
+
+type PropFdisk struct {
+	setSize int
+	setUnit string
+	setPath string
+	setType string
+	setFit  string
+	setName string
+}
+
+type PropMount struct {
+	setPath string
+	setName string
+}
+
+type PropMkfs struct {
+	setId   string
+	setType string
+}
+
+type PropLogin struct {
+	setUsuario  string
+	setPassword string
+	setId       string
+}
+
+type PropMkgrp struct {
+	setUsuarioAct string
+	setName       string
+}
+
+type PropMkusr struct {
+	setUsuario    string
+	setPassword   string
+	setGrp        string
+	setUsuarioAct string
+}
+
+type PropMkfile struct {
+	setPath       string
+	setSize       int
+	setR          bool
+	setCont       string
+	setUsuarioAct string
+}
+
+type PropMkdir struct {
+	setP          bool
+	setPath       string
+	setUsuarioAct string
+}
+
+type PropRep struct {
+	setName string
+	setPath string
+	setId   string
+	setRuta string
+}
