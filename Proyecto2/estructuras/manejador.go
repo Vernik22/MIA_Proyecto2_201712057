@@ -159,7 +159,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 			if parametrosValidos {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
-				EjecutarComandoMkdisk()
+				EjecutarComandoMkdisk(mkdisk)
 			}
 
 		} else if nombreComando == "rmdisk" {
