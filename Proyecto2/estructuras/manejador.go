@@ -41,7 +41,7 @@ func LeerTexto(data string, listaDiscos *[100]Mount) {
 							propiedadesTemp[j-1].Nombre = valor_propiedad_Comando[0]
 							propiedadesTemp[j-1].Valor = valor_propiedad_Comando[1]
 						} else if strings.Contains(propiedades[j], "\"") {
-							valor_propiedad_Comando := strings.Split(propiedades[0], "=")
+							valor_propiedad_Comando := strings.Split(propiedades[j], "=")
 							propiedadesTemp[j-1].Nombre = valor_propiedad_Comando[0]
 							propiedadesTemp[j-1].Valor = valor_propiedad_Comando[1]
 							for f := j + 1; f < len(propiedades); f++ {
