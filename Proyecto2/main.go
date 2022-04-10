@@ -17,7 +17,7 @@ func main() {
 		fmt.Println("--------------------------------------------------------------------------------")
 		fmt.Println("                            Ingrese un comando                         ")
 		fmt.Println("--------------------------------------------------------------------------------")
-		fmt.Println(">>")
+		fmt.Print(">> ")
 		scanner.Scan()
 		comando = scanner.Text()
 		if comando != "" && comando != "salir" {

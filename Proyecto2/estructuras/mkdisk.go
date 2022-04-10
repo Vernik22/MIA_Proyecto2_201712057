@@ -114,7 +114,7 @@ func DirExist(dir string) {
 }
 
 func executeComandMkdir(path string) {
-	cmd := exec.Command("mkdir", "-p", "{}", ":::", path)
+	cmd := exec.Command("mkdir", "-p", path)
 	cmd.CombinedOutput()
 }
 
