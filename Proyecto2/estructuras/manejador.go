@@ -278,7 +278,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 			if parametrosValidos {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
-				EjecutarComandoFdisk()
+				EjecutarComandoFdisk(fdisk)
 			}
 
 		} else if nombreComando == "mount" {
