@@ -20,8 +20,8 @@ func EjecutarComandoMkdisk(datDiscos PropMkdisk) {
 	if !archivoExiste(datDiscos.setPath) {
 		dt := time.Now()
 		mbrTemp := MBR{}
-		copy(mbrTemp.mbr_fecha_creacion[:], []byte(dt.String()))
-		mbrTemp.mbr_dsk_signature = int64(rand.Intn(200) + dt.Second())
+		copy(mbrTemp.Mbr_fecha_creacion[:], []byte(dt.String()))
+		mbrTemp.Mbr_dsk_signature = int64(rand.Intn(200) + dt.Second())
 
 		var file, _ = os.Create(datDiscos.setPath)
 
@@ -30,7 +30,7 @@ func EjecutarComandoMkdisk(datDiscos PropMkdisk) {
 
 		//simular un kb
 		if datDiscos.setUnit == "k" {
-			mbrTemp.mbr_tamano = int64(datDiscos.setSize) * 1024
+			mbrTemp.Mbr_tamano = int64(datDiscos.setSize) * 1024
 			//se llena la variable buffer con ceros para que no este en null
 			for i := 0; i < 1024; i++ {
 				buffer[i] = '0'
@@ -43,7 +43,7 @@ func EjecutarComandoMkdisk(datDiscos PropMkdisk) {
 				}
 			}
 		} else if datDiscos.setUnit == "m" {
-			mbrTemp.mbr_tamano = int64(datDiscos.setSize) * 1024 * 1024
+			mbrTemp.Mbr_tamano = int64(datDiscos.setSize) * 1024 * 1024
 			//se llena la variable buffer con ceros para que no este en null
 			for i := 0; i < 1024; i++ {
 				buffer[i] = '0'
@@ -58,25 +58,25 @@ func EjecutarComandoMkdisk(datDiscos PropMkdisk) {
 		}
 
 		if datDiscos.setFit == "ff" {
-			copy(mbrTemp.mbr_dsk_fit[:], "f")
+			copy(mbrTemp.Mbr_dsk_fit[:], "f")
 		} else if datDiscos.setFit == "wf" {
-			copy(mbrTemp.mbr_dsk_fit[:], "w")
+			copy(mbrTemp.Mbr_dsk_fit[:], "w")
 		} else if datDiscos.setFit == "bf" {
-			copy(mbrTemp.mbr_dsk_fit[:], "b")
+			copy(mbrTemp.Mbr_dsk_fit[:], "b")
 		}
 
 		vacia := Particion{}
-		copy(vacia.part_fit[:], "-")
-		copy(vacia.part_name[:], "0")
-		copy(vacia.part_type[:], "-")
-		vacia.part_size = -1
-		vacia.part_start = -1
-		copy(vacia.part_status[:], "0")
+		copy(vacia.Part_fit[:], "-")
+		copy(vacia.Part_name[:], "0")
+		copy(vacia.Part_type[:], "-")
+		vacia.Part_size = -1
+		vacia.Part_start = -1
+		copy(vacia.Part_status[:], "0")
 		//asignar esta particion vacia al mbr creado
-		mbrTemp.mbre_partition_1 = vacia
-		mbrTemp.mbre_partition_2 = vacia
-		mbrTemp.mbre_partition_3 = vacia
-		mbrTemp.mbre_partition_4 = vacia
+		mbrTemp.Mbr_partition_1 = vacia
+		mbrTemp.Mbr_partition_2 = vacia
+		mbrTemp.Mbr_partition_3 = vacia
+		mbrTemp.Mbr_partition_4 = vacia
 
 		//ahora se escribe el mbr creado en el archivo
 		f, err := os.OpenFile(datDiscos.setPath, os.O_WRONLY, 0755)

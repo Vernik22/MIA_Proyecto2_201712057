@@ -16,7 +16,7 @@ func EjecutarComandoRmdisk(diskRem string) {
 		var comando string = ""
 		fmt.Println("El archivo existe en: " + diskRem)
 		fmt.Println("**Se borrara el disco, ¿Esta de acuerdo? [s/n]")
-		fmt.Print(">>")
+		fmt.Print(">> ")
 		scanner := bufio.NewScanner(os.Stdin)
 		scanner.Scan()
 		comando = scanner.Text()
