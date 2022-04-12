@@ -311,7 +311,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 			if parametrosValidos {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
-				EjecutarComandoMount()
+				EjecutarComandoMount(mount, listaDiscos)
 			}
 
 		} else if nombreComando == "mkfs" {
@@ -349,7 +349,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 			if parametrosValidos {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
-				EjecutarComandoMkfs()
+				//EjecutarComandoMkfs()
 			}
 		} else if nombreComando == "login" {
 			parametrosValidos := true
@@ -380,7 +380,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
 				if !hayInicioSesion {
-					sesionOk := EjecutarComandoLogin()
+					sesionOk := true //EjecutarComandoLogin()
 					if sesionOk {
 						hayInicioSesion = true
 						usuarioIniciado.idPartMontada = login.setId
@@ -427,7 +427,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkgrp.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkgrp()
+					//EjecutarComandoMkgrp()
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")
@@ -455,7 +455,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					rmgrp.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoRmgrp()
+					//EjecutarComandoRmgrp()
 				}
 
 			} else {
@@ -492,7 +492,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkusr.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkusr()
+					//EjecutarComandoMkusr()
 				}
 
 			} else {
@@ -521,7 +521,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					rmusr.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoRmusr()
+					//EjecutarComandoRmusr()
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")
@@ -591,7 +591,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkfile.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkfile()
+					//EjecutarComandoMkfile()
 				}
 
 			} else {
@@ -635,7 +635,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkdir.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkdir()
+					//EjecutarComandoMkdir()
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")
@@ -724,12 +724,12 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
 				if reporte.setName == "disk" {
-					EjecutarRepDisk()
+					//EjecutarRepDisk()
 				} else if reporte.setName == "tree" {
-					EjecutarRepTree()
+					//EjecutarRepTree()
 				} else if reporte.setName == "file" {
 					if !flagRuta {
-						EjecutarRepFile()
+						//EjecutarRepFile()
 					} else {
 						fmt.Println("ERROR: se necesita una Ruta para este reporte ")
 					}

@@ -494,7 +494,7 @@ func imprimirDatosDisco(path string) {
 					fmt.Println("Particion Start: " + strconv.Itoa(int(ebrTemp.Part_start)))
 					fmt.Println("Particion Size: " + strconv.Itoa(int(ebrTemp.Part_size)))
 					fmt.Println("Particion Name: " + string(ebrTemp.Part_name[:]))
-
+					fmt.Println("")
 					f.Seek(ebrTemp.Part_next, 0)
 					err = binary.Read(f, binary.BigEndian, &ebrTemp)
 

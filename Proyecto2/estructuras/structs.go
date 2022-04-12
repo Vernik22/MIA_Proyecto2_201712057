@@ -19,7 +19,7 @@ type Comando struct {
 type Mount struct {
 	NombreParticion string
 	IdMount         string
-	Estado          [1]byte
+	Path            string
 	EstadoMks       [1]byte
 }
 

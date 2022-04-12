@@ -31,7 +31,6 @@ func LlenarListaDisco(montadas *[100]L.Mount) {
 	c := L.Mount{}
 	c.NombreParticion = " "
 	c.IdMount = " "
-	copy(c.Estado[:], "0")
 	copy(c.EstadoMks[:], "0")
 	for i := 0; i < 100; i++ {
 		montadas[i] = c
