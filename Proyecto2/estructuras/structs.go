@@ -79,7 +79,7 @@ type Inodo struct {
 	I_atime [19]byte  //ultima vez que se leyo sin modificar
 	I_ctime [19]byte  //fecha en la que se creo el inodo
 	I_mtime [19]byte  //ultima vez que se modifico
-	I_block [15]int64 //cantidad de bloques que hay; apunta hacia el bloque apuntador que tiene los 16 apuntadores
+	I_block [16]int64 //cantidad de bloques que hay; apunta hacia el bloque apuntador que tiene los 16 apuntadores
 	I_type  [1]byte   //indica si es carpeta o archivo :: 1=Archivo  0=Carpeta
 	I_perm  int64
 }
@@ -95,10 +95,6 @@ type BCarpeta struct {
 
 type BArchivo struct {
 	B_content [64]byte
-}
-
-type BApun struct {
-	B_apuntadores [4]Content
 }
 
 type User struct {

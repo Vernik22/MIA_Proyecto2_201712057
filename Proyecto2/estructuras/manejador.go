@@ -380,7 +380,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
 				if !hayInicioSesion {
-					sesionOk := EjecutarComandoLogin()
+					sesionOk := EjecutarComandoLogin(login, listaDiscos)
 					if sesionOk {
 						hayInicioSesion = true
 						usuarioIniciado.idPartMontada = login.setId
