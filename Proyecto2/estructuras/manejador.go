@@ -385,6 +385,9 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 						hayInicioSesion = true
 						usuarioIniciado.idPartMontada = login.setId
 						usuarioIniciado.nombreUsuario = login.setUsuario
+					} else {
+						fmt.Println("ERROR: Usuario no encontrado ")
+						fmt.Println(" ")
 					}
 				} else {
 					fmt.Println("ERROR: YA hay una sesion iniciada ")
