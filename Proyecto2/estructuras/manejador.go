@@ -430,7 +430,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkgrp.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkgrp()
+					EjecutarComandoMkgrp(mkgrp, listaDiscos)
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")
