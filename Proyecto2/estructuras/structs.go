@@ -145,6 +145,7 @@ type PropLogin struct {
 
 type PropMkgrp struct {
 	setUsuarioAct string
+	setIdMontada  string
 	setName       string
 }
 
