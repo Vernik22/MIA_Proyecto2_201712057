@@ -470,7 +470,7 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				fmt.Println(" ")
 			}
 
-		} else if nombreComando == "mkuser" {
+		} else if nombreComando == "mkusr" {
 			if hayInicioSesion {
 				parametrosValidos := true
 				flagUser := true
@@ -499,7 +499,8 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkusr.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkusr()
+					mkusr.setIdMontada = usuarioIniciado.idPartMontada
+					EjecutarComandoMkusr(mkusr, listaDiscos)
 				}
 
 			} else {
@@ -528,7 +529,8 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					rmusr.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoRmusr()
+					rmusr.setIdMontada = usuarioIniciado.idPartMontada
+					EjecutarComandoRmusr(rmusr, listaDiscos)
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")

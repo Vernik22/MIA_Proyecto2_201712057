@@ -154,6 +154,7 @@ type PropMkusr struct {
 	setPassword   string
 	setGrp        string
 	setUsuarioAct string
+	setIdMontada  string
 }
 
 type PropMkfile struct {
