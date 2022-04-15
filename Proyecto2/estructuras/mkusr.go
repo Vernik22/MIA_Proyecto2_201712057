@@ -36,152 +36,161 @@ func modificarArchivoUsr(pathDisco string, nombrePart string, nombreUsr string, 
 	cuenta := len(nombreUsr)
 	//fmt.Println("Numero de caracteres del nombre: " + cuenta)
 	if cuenta < 11 {
-		mbrTemp := MBR{}
-		f, err := os.OpenFile(pathDisco, os.O_RDWR, os.ModePerm)
-		if err != nil {
-			fmt.Println("No existe el archivo en la ruta")
-		} else {
-			f.Seek(0, 0)
-			err = binary.Read(f, binary.BigEndian, &mbrTemp)
-			_, iniPart := returnDatosPart(mbrTemp, pathDisco, nombrePart)
-			superBlock := SupB{}
-			f.Seek(iniPart, 0)
-			err = binary.Read(f, binary.BigEndian, &superBlock)
+		cuentaPWd := len(passW)
+		if cuentaPWd < 11 {
+			mbrTemp := MBR{}
+			f, err := os.OpenFile(pathDisco, os.O_RDWR, os.ModePerm)
+			if err != nil {
+				fmt.Println("No existe el archivo en la ruta")
+			} else {
+				f.Seek(0, 0)
+				err = binary.Read(f, binary.BigEndian, &mbrTemp)
+				_, iniPart := returnDatosPart(mbrTemp, pathDisco, nombrePart)
+				superBlock := SupB{}
+				f.Seek(iniPart, 0)
+				err = binary.Read(f, binary.BigEndian, &superBlock)
 
-			inodoTemp := Inodo{}
-			f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
-			err = binary.Read(f, binary.BigEndian, &inodoTemp)
+				inodoTemp := Inodo{}
+				f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
+				err = binary.Read(f, binary.BigEndian, &inodoTemp)
 
-			texto := BArchivo{}
-			userstxt := ""
-			for i := 0; i < 16; i++ {
-				if inodoTemp.I_block[i] != -1 {
-					f.Seek(superBlock.S_block_start+(inodoTemp.I_block[i]*int64(unsafe.Sizeof(texto))), 0)
-					err = binary.Read(f, binary.BigEndian, &texto)
-					userstxt += archivoAString(texto.B_content)
-				}
-			}
-
-			existeElGrupo := false
-			listaUsuarios := strings.Split(userstxt, "\n")
-			for i := 0; i < len(listaUsuarios)-1; i++ {
-				linea := strings.Split(listaUsuarios[i], ",")
-				if linea[1] == "G" && linea[0] != "0" && linea[0] != "" {
-					if linea[2] == nombreG {
-						existeElGrupo = true
-						break
+				texto := BArchivo{}
+				userstxt := ""
+				for i := 0; i < 16; i++ {
+					if inodoTemp.I_block[i] != -1 {
+						f.Seek(superBlock.S_block_start+(inodoTemp.I_block[i]*int64(unsafe.Sizeof(texto))), 0)
+						err = binary.Read(f, binary.BigEndian, &texto)
+						userstxt += archivoAString(texto.B_content)
 					}
-
 				}
-			}
-			if existeElGrupo {
-				idUsr := 1
-				existeElUsr := false
-				listaUsuarios1 := strings.Split(userstxt, "\n")
-				for i := 0; i < len(listaUsuarios1)-1; i++ {
-					linea := strings.Split(listaUsuarios1[i], ",")
-					if linea[1] == "U" && linea[0] != "0" && linea[0] != "" {
-						if linea[3] == nombreUsr {
-							fmt.Println("ERROR: el nombre del usuario ya existe: " + nombreUsr)
+
+				existeElGrupo := false
+				listaUsuarios := strings.Split(userstxt, "\n")
+				for i := 0; i < len(listaUsuarios)-1; i++ {
+					linea := strings.Split(listaUsuarios[i], ",")
+					if linea[1] == "G" && linea[0] != "0" && linea[0] != "" {
+						if linea[2] == nombreG {
 							existeElGrupo = true
 							break
 						}
-						idUsr++
-					} else if linea[1] == "U" && linea[0] == "0" && linea[0] != "" {
-						idUsr++
+
 					}
 				}
+				if existeElGrupo {
+					idUsr := 1
+					existeElUsr := false
+					listaUsuarios1 := strings.Split(userstxt, "\n")
+					for i := 0; i < len(listaUsuarios1)-1; i++ {
+						linea := strings.Split(listaUsuarios1[i], ",")
+						if linea[1] == "U" && linea[0] != "0" && linea[0] != "" {
+							if linea[3] == nombreUsr {
+								fmt.Println("ERROR: el nombre del usuario ya existe: " + nombreUsr)
+								existeElUsr = true
+								break
+							}
+							idUsr++
+						} else if linea[1] == "U" && linea[0] == "0" && linea[0] != "" {
+							idUsr++
+						}
+					}
 
-				if !existeElUsr {
-					inodoTemp1 := Inodo{}
-					f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(inodoTemp1)), 0)
-					err = binary.Read(f, binary.BigEndian, &inodoTemp1)
-					contador := 1
-					noBloques := 0
+					if !existeElUsr {
+						inodoTemp1 := Inodo{}
+						f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(inodoTemp1)), 0)
+						err = binary.Read(f, binary.BigEndian, &inodoTemp1)
+						contador := 1
+						noBloques := 0
 
-					nuevoCont := strconv.Itoa(idUsr) + ",U," + nombreG + "," + nombreUsr + "," + passW + "\n"
-					cuenta = len(nuevoCont)
-					inodoTemp1.I_size += int64(cuenta)
-					userstxt = userstxt + nuevoCont
-					for i := 0; i < int(inodoTemp1.I_size); i++ {
-						if contador == 64 {
+						nuevoCont := strconv.Itoa(idUsr) + ",U," + nombreG + "," + nombreUsr + "," + passW + "\n"
+						cuenta = len(nuevoCont)
+						inodoTemp1.I_size += int64(cuenta)
+						userstxt = userstxt + nuevoCont
+						for i := 0; i < int(inodoTemp1.I_size); i++ {
+							if contador == 64 {
+								noBloques += 1
+								contador = 0
+							}
+							contador++
+						}
+						if inodoTemp1.I_size%64 != 0 {
 							noBloques += 1
-							contador = 0
 						}
-						contador++
-					}
-					if inodoTemp1.I_size%64 != 0 {
-						noBloques += 1
-					}
 
-					if noBloques == 1 {
+						if noBloques == 1 {
 
-						copy(texto.B_content[:], userstxt)
-						f.Seek(superBlock.S_block_start+(inodoTemp.I_block[0]*int64(unsafe.Sizeof(texto))), 0)
-						err = binary.Write(f, binary.BigEndian, texto)
+							copy(texto.B_content[:], userstxt)
+							f.Seek(superBlock.S_block_start+(inodoTemp.I_block[0]*int64(unsafe.Sizeof(texto))), 0)
+							err = binary.Write(f, binary.BigEndian, texto)
 
-						dt := time.Now()
-						copy(inodoTemp1.I_mtime[:], dt.String())
-
-						f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
-						err = binary.Write(f, binary.BigEndian, &inodoTemp1)
-						fmt.Println("Se creo el usuario exitosamente: " + nombreUsr)
-						fmt.Println(userstxt)
-					} else {
-						textoNuevo := BArchivo{}
-						textEnBlock := ""
-						if inodoTemp.I_block[noBloques-1] == -1 {
-							//fmt.Println("SE creo otro bloque")
-							copy(textoNuevo.B_content[:], nuevoCont)
 							dt := time.Now()
 							copy(inodoTemp1.I_mtime[:], dt.String())
-							inodoTemp1.I_block[noBloques-1] = superBlock.S_first_blo
 
 							f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
 							err = binary.Write(f, binary.BigEndian, &inodoTemp1)
-
-							f.Seek(superBlock.S_block_start+(inodoTemp1.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
-							err = binary.Write(f, binary.BigEndian, &textoNuevo)
-
-							//agregar un 1 al bitmap de bloques
-							var otro byte = '1'
-							f.Seek(superBlock.S_bm_block_start+superBlock.S_first_blo*int64(unsafe.Sizeof(otro)), 0)
-							err = binary.Write(f, binary.BigEndian, otro)
-							//actualizar superbloque
-							superBlock.S_first_blo = superBlock.S_first_blo + 1
-							superBlock.S_free_blocks_count = superBlock.S_free_blocks_count - 1
-							f.Seek(iniPart, 0)
-							err = binary.Write(f, binary.BigEndian, superBlock)
 							fmt.Println("Se creo el usuario exitosamente: " + nombreUsr)
 							fmt.Println(userstxt)
-
 						} else {
-							//fmt.Println("SE modifico el otro bloque")
-							f.Seek(superBlock.S_block_start+(inodoTemp.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
-							err = binary.Read(f, binary.BigEndian, &textoNuevo)
+							textoNuevo := BArchivo{}
+							textEnBlock := ""
+							if inodoTemp.I_block[noBloques-1] == -1 {
+								//fmt.Println("SE creo otro bloque")
+								copy(textoNuevo.B_content[:], nuevoCont)
+								dt := time.Now()
+								copy(inodoTemp1.I_mtime[:], dt.String())
+								inodoTemp1.I_block[noBloques-1] = superBlock.S_first_blo
 
-							textEnBlock = archivoAString(textoNuevo.B_content)
-							textEnBlock = textEnBlock + nuevoCont
-							copy(textoNuevo.B_content[:], textEnBlock)
-							f.Seek(superBlock.S_block_start+(inodoTemp.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
-							err = binary.Write(f, binary.BigEndian, textoNuevo)
+								f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
+								err = binary.Write(f, binary.BigEndian, &inodoTemp1)
 
-							dt := time.Now()
-							copy(inodoTemp1.I_mtime[:], dt.String())
+								f.Seek(superBlock.S_block_start+(inodoTemp1.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
+								err = binary.Write(f, binary.BigEndian, &textoNuevo)
 
-							f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
-							err = binary.Write(f, binary.BigEndian, &inodoTemp1)
-							fmt.Println("Se creo el usuario exitosamente: " + nombreUsr)
-							fmt.Println(userstxt)
+								//agregar un 1 al bitmap de bloques
+								var otro byte = '1'
+								f.Seek(superBlock.S_bm_block_start+superBlock.S_first_blo*int64(unsafe.Sizeof(otro)), 0)
+								err = binary.Write(f, binary.BigEndian, otro)
+								//actualizar superbloque
+								superBlock.S_first_blo = superBlock.S_first_blo + 1
+								superBlock.S_free_blocks_count = superBlock.S_free_blocks_count - 1
+								f.Seek(iniPart, 0)
+								err = binary.Write(f, binary.BigEndian, superBlock)
+								fmt.Println("Se creo el usuario exitosamente: " + nombreUsr)
+								fmt.Println(userstxt)
+
+							} else {
+								//fmt.Println("SE modifico el otro bloque")
+								f.Seek(superBlock.S_block_start+(inodoTemp.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
+								err = binary.Read(f, binary.BigEndian, &textoNuevo)
+
+								textEnBlock = archivoAString(textoNuevo.B_content)
+								textEnBlock = textEnBlock + nuevoCont
+								copy(textoNuevo.B_content[:], textEnBlock)
+								f.Seek(superBlock.S_block_start+(inodoTemp.I_block[noBloques-1]*int64(unsafe.Sizeof(texto))), 0)
+								err = binary.Write(f, binary.BigEndian, textoNuevo)
+
+								dt := time.Now()
+								copy(inodoTemp1.I_mtime[:], dt.String())
+
+								f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
+								err = binary.Write(f, binary.BigEndian, &inodoTemp1)
+								fmt.Println("Se creo el usuario exitosamente: " + nombreUsr)
+								fmt.Println(userstxt)
+
+							}
 
 						}
 
 					}
-
+				} else {
+					fmt.Println("ERROR: el nombre del grupo no existe: " + nombreG)
 				}
-			}
 
+			}
+		} else {
+			fmt.Println("ERROR: el password del usuario es mayor a 10 caracteres")
+			fmt.Println(cuentaPWd)
 		}
+
 	} else {
 		fmt.Println("ERROR: el nombre del usuario es mayor a 10 caracteres")
 		fmt.Println(cuenta)

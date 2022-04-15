@@ -163,12 +163,14 @@ type PropMkfile struct {
 	setR          bool
 	setCont       string
 	setUsuarioAct string
+	setIdMontada  string
 }
 
 type PropMkdir struct {
 	setP          bool
 	setPath       string
 	setUsuarioAct string
+	setIdMontada  string
 }
 
 type PropRep struct {

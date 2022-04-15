@@ -600,7 +600,8 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkfile.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkfile()
+					mkfile.setIdMontada = usuarioIniciado.idPartMontada
+					EjecutarComandoMkfile(mkfile, listaDiscos)
 				}
 
 			} else {
