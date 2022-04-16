@@ -94,13 +94,13 @@ func modificarArchivo(pathDisco string, nombrePart string, nombreG string) {
 				nuevoCont := strconv.Itoa(idGrupo) + ",G," + nombreG + "\n"
 				userstxt = userstxt + nuevoCont
 				for i := 0; i < int(inodoTemp1.I_size); i++ {
-					if contador == 64 {
+					if contador == 63 {
 						noBloques += 1
 						contador = 0
 					}
 					contador++
 				}
-				if inodoTemp1.I_size%64 != 0 {
+				if inodoTemp1.I_size%63 != 0 {
 					noBloques += 1
 				}
 
