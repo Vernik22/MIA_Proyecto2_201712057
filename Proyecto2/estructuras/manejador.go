@@ -645,7 +645,8 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 					fmt.Println("--->Parametros Invalidos ")
 				} else {
 					mkdir.setUsuarioAct = usuarioIniciado.nombreUsuario
-					EjecutarComandoMkdir()
+					mkdir.setIdMontada = usuarioIniciado.idPartMontada
+					EjecutarComandoMkdir(mkdir, listaDiscos)
 				}
 			} else {
 				fmt.Println("ERROR: NO hay una sesion iniciada ")
