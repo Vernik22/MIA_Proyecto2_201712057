@@ -735,12 +735,12 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				fmt.Println("--->Parametros Invalidos ")
 			} else {
 				if reporte.setName == "disk" {
-					EjecutarRepDisk()
+					EjecutarRepDisk(reporte, listaDiscos)
 				} else if reporte.setName == "tree" {
-					EjecutarRepTree()
+					EjecutarRepTree(reporte, listaDiscos)
 				} else if reporte.setName == "file" {
 					if !flagRuta {
-						EjecutarRepFile()
+						EjecutarRepFile(reporte, listaDiscos)
 					} else {
 						fmt.Println("ERROR: se necesita una Ruta para este reporte ")
 					}
