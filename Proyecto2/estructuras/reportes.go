@@ -386,9 +386,13 @@ func EjecutarRepFile(datRep PropRep, listaDiscos *[100]Mount) {
 						err = binary.Read(f, binary.BigEndian, &bloTemp)
 
 						//posible cambio
-						saltos := strings.Split(archivoAString(bloTemp.B_content), "\n")
-						for z := 0; z < len(saltos); z++ {
-							cuerpo += saltos[z] + "\\n"
+						if strings.Contains(archivoAString(bloTemp.B_content), "\n") {
+							saltos := strings.Split(archivoAString(bloTemp.B_content), "\n")
+							for z := 0; z < len(saltos); z++ {
+								cuerpo += saltos[z] + "\\n"
+							}
+						} else {
+							cuerpo += archivoAString(bloTemp.B_content)
 						}
 
 					}
