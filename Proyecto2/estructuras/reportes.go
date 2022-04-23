@@ -429,7 +429,7 @@ func CreateArchivo(path string, data string) {
 	if err2 != nil {
 		log.Fatal(err2)
 	}
-	cmd := exec.Command("dot", "-Tpdf", path[0:len(path)-len(nombreArchivo)]+nombreArchivo[0:len(nombreArchivo)-4]+".txt", "-o", path)
+	cmd := exec.Command("dot", "-Tpdf", path[0:len(path)-len(nombreArchivo)]+nombreArchivo[0:len(nombreArchivo)-4]+".txt", "-o", path[0:len(path)-len(nombreArchivo)]+nombreArchivo[0:len(nombreArchivo)-4]+".pdf")
 	cmd.CombinedOutput()
 
 }

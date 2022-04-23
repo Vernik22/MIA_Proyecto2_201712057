@@ -313,83 +313,12 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 							fmt.Println("Se creo el Archivo con exito")
 						} else {
 							inodoArchivoNuevo.I_size = int64(datFile.setSize)
-							//blocksAUsar := cantidadBloquesAUsar1(datFile.setSize)
-							for u := 0; u < 16; u++ {
-								inodoArchivoNuevo.I_block[u] = superBlock.S_first_blo
-								superBlock.S_first_blo = superBlock.S_first_blo + 1
-								superBlock.S_blocks_count = superBlock.S_blocks_count - 1
-
-								var otro byte = '1'
-								var actual byte = '0'
-								for j := 0; j < int(superBlock.S_blocks_count); j++ {
-
-									f.Seek(superBlock.S_bm_block_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
-									err = binary.Read(f, binary.BigEndian, &actual)
-
-									if string(actual) == "0" {
-										f.Seek(superBlock.S_bm_block_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
-										err = binary.Write(f, binary.BigEndian, otro)
-										break
-									}
-								}
-
-							}
-							condi := 0
-							posicion := 0
-							for inodoArchivoNuevo.I_block[condi] != -1 {
-								contNumero := 0
-								contenidoNuevo := ""
-								numero := 0
-								for {
-									if contNumero < 63 && posicion < datFile.setSize {
-										contenidoNuevo += strconv.Itoa(numero)
-										contNumero++
-										numero++
-										posicion++
-									} else {
-										break
-									}
-
-									if numero == 9 {
-										numero = 0
-									}
-								}
-								archivoNuevo := BArchivo{}
-								copy(archivoNuevo.B_content[:], contenidoNuevo)
-								f.Seek(superBlock.S_block_start+inodoArchivoNuevo.I_block[condi]*int64(unsafe.Sizeof(BArchivo{})), 0)
-								err = binary.Write(f, binary.BigEndian, archivoNuevo)
-								condi++
-
-							}
-							for h := 0; h < 16; h++ {
-								if inodoTemp.I_block[h] != -1 {
-									carpetaComprobar := BCarpeta{}
-									f.Seek(superBlock.S_block_start+inodoTemp.I_block[h]*int64(unsafe.Sizeof(BCarpeta{})), 0)
-									err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
-									for k := 0; k < 4; k++ {
-										if carpetaComprobar.B_content[k].B_inodo == -1 {
-											copy(carpetaComprobar.B_content[k].B_name[:], []byte(rutaArchivo[carp-1]))
-											carpetaComprobar.B_content[k].B_inodo = int32(superBlock.S_first_blo)
-											f.Seek(superBlock.S_block_start+inodoTemp.I_block[h]*int64(unsafe.Sizeof(BCarpeta{})), 0)
-											err = binary.Write(f, binary.BigEndian, carpetaComprobar)
-											h = 20
-											break
-										}
-									}
-
-								} else {
-									//crear nuevo bloque carpeta
-									carpetaComprobar := BCarpeta{}
-									for k := 0; k < 4; k++ {
-										carpetaComprobar.B_content[k].B_inodo = -1
-										copy(carpetaComprobar.B_content[k].B_name[:], " ")
-									}
-									carpetaComprobar.B_content[0].B_inodo = int32(superBlock.S_first_ino)
-									copy(carpetaComprobar.B_content[0].B_name[:], rutaArchivo[carp-1])
-									f.Seek(superBlock.S_block_start+superBlock.S_first_blo*int64(unsafe.Sizeof(BCarpeta{})), 0)
-									err = binary.Write(f, binary.BigEndian, carpetaComprobar)
-
-									inodoTemp.I_block[h] = superBlock.S_first_blo
+							blocksAUsar := cantidadBloquesAUsar1(datFile.setSize)
+							if blocksAUsar < 16 {
+								for u := 0; u < blocksAUsar; u++ {
+									inodoArchivoNuevo.I_block[u] = superBlock.S_first_blo
+									superBlock.S_first_blo = superBlock.S_first_blo + 1
+									superBlock.S_blocks_count = superBlock.S_blocks_count - 1
 
 									var otro byte = '1'
 									var actual byte = '0'
@@ -404,44 +333,122 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 											break
 										}
 									}
-									superBlock.S_first_blo = superBlock.S_first_blo + 1
-									superBlock.S_free_blocks_count = superBlock.S_free_blocks_count - 1
-
-									f.Seek(superBlock.S_block_start+inodoTemp.I_block[0]*int64(unsafe.Sizeof(BCarpeta{})), 0)
-									err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
-
-									dt := time.Now()
-									copy(inodoTemp.I_mtime[:], dt.String())
-									f.Seek(superBlock.S_inode_start+int64(carpetaComprobar.B_content[0].B_inodo)*int64(unsafe.Sizeof(Inodo{})), 0)
-									err = binary.Write(f, binary.BigEndian, carpetaComprobar)
-									break
 
 								}
-							}
+								var condi int = 0
+								posicion := 0
+								for {
+									if inodoArchivoNuevo.I_block[condi] != -1 {
+										break
+									}
+									contNumero := 0
+									contenidoNuevo := ""
+									numero := 0
+									for {
+										if contNumero < 63 && posicion < datFile.setSize {
+											contenidoNuevo += strconv.Itoa(numero)
+											contNumero++
+											numero++
+											posicion++
+										} else {
+											break
+										}
 
-							f.Seek(superBlock.S_inode_start+superBlock.S_first_ino*int64(unsafe.Sizeof(Inodo{})), 0)
-							err = binary.Write(f, binary.BigEndian, inodoArchivoNuevo)
+										if numero == 9 {
+											numero = 0
+										}
+									}
+									archivoNuevo := BArchivo{}
+									copy(archivoNuevo.B_content[:], contenidoNuevo)
+									f.Seek(superBlock.S_block_start+inodoArchivoNuevo.I_block[condi]*int64(unsafe.Sizeof(BArchivo{})), 0)
+									err = binary.Write(f, binary.BigEndian, archivoNuevo)
+									condi++
 
-							superBlock.S_first_ino = superBlock.S_first_ino + 1
-							superBlock.S_free_inodes_count = superBlock.S_free_inodes_count - 1
+								}
+								for h := 0; h < 16; h++ {
+									if inodoTemp.I_block[h] != -1 {
+										carpetaComprobar := BCarpeta{}
+										f.Seek(superBlock.S_block_start+inodoTemp.I_block[h]*int64(unsafe.Sizeof(BCarpeta{})), 0)
+										err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
+										for k := 0; k < 4; k++ {
+											if carpetaComprobar.B_content[k].B_inodo == -1 {
+												copy(carpetaComprobar.B_content[k].B_name[:], []byte(rutaArchivo[carp-1]))
+												carpetaComprobar.B_content[k].B_inodo = int32(superBlock.S_first_blo)
+												f.Seek(superBlock.S_block_start+inodoTemp.I_block[h]*int64(unsafe.Sizeof(BCarpeta{})), 0)
+												err = binary.Write(f, binary.BigEndian, carpetaComprobar)
+												h = 20
+												break
+											}
+										}
 
-							f.Seek(iniPart, 0)
-							err = binary.Write(f, binary.BigEndian, superBlock)
+									} else {
+										//crear nuevo bloque carpeta
+										carpetaComprobar := BCarpeta{}
+										for k := 0; k < 4; k++ {
+											carpetaComprobar.B_content[k].B_inodo = -1
+											copy(carpetaComprobar.B_content[k].B_name[:], " ")
+										}
+										carpetaComprobar.B_content[0].B_inodo = int32(superBlock.S_first_ino)
+										copy(carpetaComprobar.B_content[0].B_name[:], rutaArchivo[carp-1])
+										f.Seek(superBlock.S_block_start+superBlock.S_first_blo*int64(unsafe.Sizeof(BCarpeta{})), 0)
+										err = binary.Write(f, binary.BigEndian, carpetaComprobar)
 
-							var otro byte = '1'
-							var actual byte = '0'
-							for j := 0; j < int(superBlock.S_inodes_count); j++ {
+										inodoTemp.I_block[h] = superBlock.S_first_blo
 
-								f.Seek(superBlock.S_bm_inode_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
-								err = binary.Read(f, binary.BigEndian, &actual)
+										var otro byte = '1'
+										var actual byte = '0'
+										for j := 0; j < int(superBlock.S_blocks_count); j++ {
 
-								if string(actual) == "0" {
+											f.Seek(superBlock.S_bm_block_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
+											err = binary.Read(f, binary.BigEndian, &actual)
+
+											if string(actual) == "0" {
+												f.Seek(superBlock.S_bm_block_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
+												err = binary.Write(f, binary.BigEndian, otro)
+												break
+											}
+										}
+										superBlock.S_first_blo = superBlock.S_first_blo + 1
+										superBlock.S_free_blocks_count = superBlock.S_free_blocks_count - 1
+
+										f.Seek(superBlock.S_block_start+inodoTemp.I_block[0]*int64(unsafe.Sizeof(BCarpeta{})), 0)
+										err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
+
+										dt := time.Now()
+										copy(inodoTemp.I_mtime[:], dt.String())
+										f.Seek(superBlock.S_inode_start+int64(carpetaComprobar.B_content[0].B_inodo)*int64(unsafe.Sizeof(Inodo{})), 0)
+										err = binary.Write(f, binary.BigEndian, carpetaComprobar)
+										break
+
+									}
+								}
+
+								f.Seek(superBlock.S_inode_start+superBlock.S_first_ino*int64(unsafe.Sizeof(Inodo{})), 0)
+								err = binary.Write(f, binary.BigEndian, inodoArchivoNuevo)
+
+								superBlock.S_first_ino = superBlock.S_first_ino + 1
+								superBlock.S_free_inodes_count = superBlock.S_free_inodes_count - 1
+
+								f.Seek(iniPart, 0)
+								err = binary.Write(f, binary.BigEndian, superBlock)
+
+								var otro byte = '1'
+								var actual byte = '0'
+								for j := 0; j < int(superBlock.S_inodes_count); j++ {
+
 									f.Seek(superBlock.S_bm_inode_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
-									err = binary.Write(f, binary.BigEndian, otro)
-									break
+									err = binary.Read(f, binary.BigEndian, &actual)
+
+									if string(actual) == "0" {
+										f.Seek(superBlock.S_bm_inode_start+int64(j)*int64(unsafe.Sizeof(otro)), 0)
+										err = binary.Write(f, binary.BigEndian, otro)
+										break
+									}
 								}
+								fmt.Println("Se creo el Archivo con exito")
+							} else {
+								fmt.Println("No se pudo crear el archivo")
 							}
-							fmt.Println("Se creo el Archivo con exito")
 						}
 						break
 					}

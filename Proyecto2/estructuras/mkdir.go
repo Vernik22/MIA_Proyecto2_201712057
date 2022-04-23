@@ -109,8 +109,8 @@ func modificarArchivoDir(pathDisco string, nombrePart string, datDir PropMkdir) 
 					err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
 
 					carpetaRaiz.B_content[1].B_inodo = carpetaComprobar.B_content[0].B_inodo
-					carpetaRaiz.B_content[1].B_inodo = -1
-					carpetaRaiz.B_content[1].B_inodo = -1
+					carpetaRaiz.B_content[2].B_inodo = -1
+					carpetaRaiz.B_content[3].B_inodo = -1
 
 					f.Seek(superBloque.S_block_start+superBloque.S_first_blo*int64(unsafe.Sizeof(BCarpeta{})), 0)
 					err = binary.Write(f, binary.BigEndian, carpetaRaiz)
@@ -245,8 +245,8 @@ func modificarArchivoDir(pathDisco string, nombrePart string, datDir PropMkdir) 
 						err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
 
 						carpetaRaiz.B_content[1].B_inodo = carpetaComprobar.B_content[0].B_inodo
-						carpetaRaiz.B_content[1].B_inodo = -1
-						carpetaRaiz.B_content[1].B_inodo = -1
+						carpetaRaiz.B_content[2].B_inodo = -1
+						carpetaRaiz.B_content[3].B_inodo = -1
 
 						f.Seek(superBloque.S_block_start+superBloque.S_first_blo*int64(unsafe.Sizeof(BCarpeta{})), 0)
 						err = binary.Write(f, binary.BigEndian, carpetaRaiz)
