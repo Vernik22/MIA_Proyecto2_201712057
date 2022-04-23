@@ -410,8 +410,6 @@ func EjecutarRepFile(datRep PropRep, listaDiscos *[100]Mount) {
 }
 
 func CreateArchivo(path string, data string) {
-	fmt.Println(int64(unsafe.Sizeof(BCarpeta{})))
-	fmt.Println(int64(unsafe.Sizeof(BArchivo{})))
 	propiedades := strings.Split(path, "/")
 	nombreArchivo := propiedades[len(propiedades)-1]
 	f, err := os.Create(path[0:len(path)-len(nombreArchivo)] + nombreArchivo[0:len(nombreArchivo)-4] + ".txt")
