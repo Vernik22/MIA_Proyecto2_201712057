@@ -654,6 +654,10 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 			}
 
 		} else if nombreComando == "pause" {
+			fmt.Println("--------------------------------------------------------------------------------")
+			fmt.Println("                            PAUSE                         ")
+			fmt.Println("--------------------------------------------------------------------------------")
+			fmt.Println("")
 			fmt.Println("Pause. Presione una tecla para continuar...")
 			fmt.Scanln()
 		} else if nombreComando == "exec" {

@@ -86,7 +86,7 @@ type Inodo struct {
 
 type Content struct {
 	B_name  [12]byte
-	B_inodo int64
+	B_inodo int32
 }
 
 type BCarpeta struct {

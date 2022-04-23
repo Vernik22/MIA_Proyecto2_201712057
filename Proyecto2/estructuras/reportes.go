@@ -61,13 +61,13 @@ func EjecutarRepDisk(datRep PropRep, listaDiscos *[100]Mount) {
 				if string(parts[i].Part_type[:]) == "p" {
 
 					porcentajeUtilizado = (float64(parts[i].Part_size) / float64(TamanoDisco)) * 100
-					cuerpo += "<td height='30' width='75.0'>PRIMARIA <br/>" + string(parts[i].Part_name[:]) + " <br/> Ocupado: " + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>"
+					cuerpo += "<td height='30' width='75.0'>PRIMARIA <br/>" + nombreAString(parts[i].Part_name) + " <br/> Ocupado: " + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>"
 					EspacioUtilizado += parts[i].Part_size
 
 				} else if string(parts[i].Part_type[:]) == "e" {
 					EspacioUtilizado += parts[i].Part_size
 					porcentajeUtilizado = (float64(parts[i].Part_size) / float64(TamanoDisco)) * 100
-					cuerpo += "<td  height='30' width='15.0'>\n <table border='5'  height='30' WIDTH='15.0' cellborder='1'>\n  <tr>  <td height='60' colspan='100%'>EXTENDIDA <br/> " + string(parts[i].Part_name[:]) + " <br/> Ocupado:" + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>  </tr>\n<tr>"
+					cuerpo += "<td  height='30' width='15.0'>\n <table border='5'  height='30' WIDTH='15.0' cellborder='1'>\n  <tr>  <td height='60' colspan='100%'>EXTENDIDA <br/> " + nombreAString(parts[i].Part_name) + " <br/> Ocupado:" + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>  </tr>\n<tr>"
 
 					//revisar las particiones logicas
 					ebrTemp := EBR{}
@@ -79,7 +79,7 @@ func EjecutarRepDisk(datRep PropRep, listaDiscos *[100]Mount) {
 					for ebrTemp.Part_next != -1 {
 						EspacioUtilizado1 += ebrTemp.Part_size
 						porcentajeUtilizado = (float64(ebrTemp.Part_size) / float64(parts[i].Part_size)) * 100
-						cuerpo += "<td height='30'>EBR</td><td height='30'> Logica:  " + string(ebrTemp.Part_name[:]) + " " + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>"
+						cuerpo += "<td height='30'>EBR</td><td height='30'> Logica:  " + nombreAString(ebrTemp.Part_name) + " " + strconv.Itoa(int(porcentajeUtilizado)) + "%</td>"
 						cont++
 						f.Seek(ebrTemp.Part_next, 0)
 						err = binary.Read(f, binary.BigEndian, &ebrTemp)
@@ -199,7 +199,7 @@ func EjecutarRepTree(datRep PropRep, listaDiscos *[100]Mount) {
 								cuerpo += "struct" + strconv.Itoa(int(inodoTemp.I_block[j])) + " [shape=record, width = 3,label=\"<f0> Bloque Carpeta" + strconv.Itoa(int(inodoTemp.I_block[j])) + "|{B_name | B_inodo}"
 
 								for k := 0; k < 4; k++ {
-									cuerpo += "|{" + string(bloTemp.B_content[k].B_name[:]) + "|<f" + strconv.Itoa(int(k+1)) + "> " + strconv.Itoa(int(bloTemp.B_content[k].B_inodo)) + "}"
+									cuerpo += "|{" + nombreAStringFile(bloTemp.B_content[k].B_name) + "|<f" + strconv.Itoa(int(k+1)) + "> " + strconv.Itoa(int(bloTemp.B_content[k].B_inodo)) + "}"
 								}
 								contador++
 								cuerpo += "\"];"
@@ -211,8 +211,15 @@ func EjecutarRepTree(datRep PropRep, listaDiscos *[100]Mount) {
 								cuerpo += "\n node [shape = record, style=filled, fillcolor=gray]; \n"
 								cuerpo += "struct" + strconv.Itoa(int(inodoTemp.I_block[j])) + " [shape=record,label=\"<f0> Bloque Archivo" + strconv.Itoa(int(inodoTemp.I_block[j])) + "|"
 								//posibleCambio
-								cuerpo += string(bloTemp.B_content[:])
 
+								if strings.Contains(archivoAString(bloTemp.B_content), "\n") {
+									saltos := strings.Split(archivoAString(bloTemp.B_content), "\n")
+									for z := 0; z < len(saltos); z++ {
+										cuerpo += saltos[z] + "\\n"
+									}
+								} else {
+									cuerpo += archivoAString(bloTemp.B_content)
+								}
 								contador++
 								cuerpo += "\"];"
 
@@ -350,7 +357,7 @@ func EjecutarRepFile(datRep PropRep, listaDiscos *[100]Mount) {
 							for k := 0; k < 4; k++ {
 								var1 := nombreAStringFile(carpetaComprobar.B_content[k].B_name)
 								if rutaArchivo[i] == var1 {
-									f.Seek(superBloque.S_inode_start+carpetaComprobar.B_content[k].B_inodo*int64(unsafe.Sizeof(Inodo{})), 0)
+									f.Seek(superBloque.S_inode_start+int64(carpetaComprobar.B_content[k].B_inodo)*int64(unsafe.Sizeof(Inodo{})), 0)
 									err = binary.Read(f, binary.BigEndian, &inodoTemp)
 
 									existeCarpeta = true
@@ -379,7 +386,10 @@ func EjecutarRepFile(datRep PropRep, listaDiscos *[100]Mount) {
 						err = binary.Read(f, binary.BigEndian, &bloTemp)
 
 						//posible cambio
-						cuerpo += string(bloTemp.B_content[:])
+						saltos := strings.Split(archivoAString(bloTemp.B_content), "\n")
+						for z := 0; z < len(saltos); z++ {
+							cuerpo += saltos[z] + "\\n"
+						}
 
 					}
 				}
@@ -400,9 +410,11 @@ func EjecutarRepFile(datRep PropRep, listaDiscos *[100]Mount) {
 }
 
 func CreateArchivo(path string, data string) {
+	fmt.Println(int64(unsafe.Sizeof(BCarpeta{})))
+	fmt.Println(int64(unsafe.Sizeof(BArchivo{})))
 	propiedades := strings.Split(path, "/")
 	nombreArchivo := propiedades[len(propiedades)-1]
-	f, err := os.Create(path)
+	f, err := os.Create(path[0:len(path)-len(nombreArchivo)] + nombreArchivo[0:len(nombreArchivo)-4] + ".txt")
 
 	if err != nil {
 		log.Fatal(err)
@@ -415,8 +427,7 @@ func CreateArchivo(path string, data string) {
 	if err2 != nil {
 		log.Fatal(err2)
 	}
-
-	cmd := exec.Command("dot -Tpdf " + path + " -o " + nombreArchivo[0:len(nombreArchivo)-4] + ".pdf")
+	cmd := exec.Command("dot", "-Tpdf", path[0:len(path)-len(nombreArchivo)]+nombreArchivo[0:len(nombreArchivo)-4]+".txt", "-o", path)
 	cmd.CombinedOutput()
 
 }
