@@ -44,8 +44,8 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 		f.Seek(iniPart, 0)
 		err = binary.Read(f, binary.BigEndian, &superBlock)
 		inodoTemp := Inodo{}
-		//inodoAnterior := Inodo{}
-		f.Seek(superBlock.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
+		//inodoAnterior := Inodo{} +int64(unsafe.Sizeof(Inodo{}))
+		f.Seek(superBlock.S_inode_start, 0)
 		err = binary.Read(f, binary.BigEndian, &inodoTemp)
 
 		existeCarpeta := false
@@ -57,7 +57,7 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 				for j := 0; j < 16; j++ {
 					if inodoTemp.I_block[j] != -1 {
 						carpetaComprobar := BCarpeta{}
-						f.Seek(superBlock.S_block_start+(inodoTemp.I_block[j]*int64(unsafe.Sizeof(Inodo{}))), 0)
+						f.Seek(superBlock.S_block_start+(inodoTemp.I_block[j]*int64(unsafe.Sizeof(BCarpeta{}))), 0)
 						err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
 						for k := 0; k < 4; k++ {
 							var1 := nombreAStringFile(carpetaComprobar.B_content[k].B_name)
@@ -354,7 +354,7 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 											break
 										}
 
-										if numero == 9 {
+										if numero == 10 {
 											numero = 0
 										}
 									}
@@ -372,8 +372,8 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 										err = binary.Read(f, binary.BigEndian, &carpetaComprobar)
 										for k := 0; k < 4; k++ {
 											if carpetaComprobar.B_content[k].B_inodo == -1 {
-												copy(carpetaComprobar.B_content[k].B_name[:], []byte(rutaArchivo[carp-1]))
-												carpetaComprobar.B_content[k].B_inodo = int32(superBlock.S_first_blo)
+												copy(carpetaComprobar.B_content[k].B_name[:], rutaArchivo[carp-1])
+												carpetaComprobar.B_content[k].B_inodo = int32(superBlock.S_first_ino)
 												f.Seek(superBlock.S_block_start+inodoTemp.I_block[h]*int64(unsafe.Sizeof(BCarpeta{})), 0)
 												err = binary.Write(f, binary.BigEndian, carpetaComprobar)
 												h = 20
@@ -494,12 +494,13 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 
 						for b := 0; b < 16; b++ {
 							if inodoTemp.I_block[b] != -1 {
+
 								carpetaComprobar1 := BCarpeta{}
 								f.Seek(superBlock.S_block_start+inodoTemp.I_block[b]*int64(unsafe.Sizeof(BCarpeta{})), 0)
 								err = binary.Read(f, binary.BigEndian, &carpetaComprobar1)
 
 								for k := 0; k < 4; k++ {
-									if carpetaComprobar1.B_content[b].B_inodo == -1 {
+									if carpetaComprobar1.B_content[k].B_inodo == -1 {
 										copy(carpetaComprobar1.B_content[k].B_name[:], rutaArchivo[i])
 										carpetaComprobar1.B_content[k].B_inodo = int32(superBlock.S_first_ino)
 										f.Seek(superBlock.S_block_start+inodoTemp.I_block[b]*int64(unsafe.Sizeof(BCarpeta{})), 0)
@@ -508,6 +509,7 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 										break
 									}
 								}
+
 							} else {
 								//crear nuevo bloque carpeta
 								carpetaComprobar1 := BCarpeta{}

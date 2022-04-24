@@ -43,9 +43,9 @@ func modificarArchivoDir(pathDisco string, nombrePart string, datDir PropMkdir) 
 		err = binary.Read(f, binary.BigEndian, &superBloque)
 
 		inodoTemp := Inodo{}
-		//inodoAnterior := Inodo{}
+		//inodoAnterior := Inodo{} +int64(unsafe.Sizeof(Inodo{}))
 
-		f.Seek(superBloque.S_inode_start+int64(unsafe.Sizeof(Inodo{})), 0)
+		f.Seek(superBloque.S_inode_start, 0)
 		err = binary.Read(f, binary.BigEndian, &inodoTemp)
 
 		//inodoAnterior = inodoTemp
