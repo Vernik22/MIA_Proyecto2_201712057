@@ -338,7 +338,7 @@ func modificarArchivoFile(pathDisco string, nombrePart string, datFile PropMkfil
 								var condi int = 0
 								posicion := 0
 								for {
-									if inodoArchivoNuevo.I_block[condi] != -1 {
+									if inodoArchivoNuevo.I_block[condi] == -1 {
 										break
 									}
 									contNumero := 0
