@@ -80,15 +80,7 @@ func LeerTexto(data string, listaDiscos *[100]Mount) {
 }
 
 func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
-	/*
-		c := Mount{}
-		copy(c.Estado[:], "2")
-		listaDiscos[0] = c
 
-		fmt.Println("ejecutando comandos validos")
-		fmt.Println(string(listaDiscos[0].Estado[:]))
-		fmt.Println(string(listaDiscos[1].Estado[:]))
-	*/
 	for element := ListaComandos.Front(); element != nil; element = element.Next() {
 		comandoTemp := element.Value.(Comando)
 		//lista de propiedades de comando
@@ -420,8 +412,17 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				for f := 0; f < len(comandoTemp.Propiedades); f++ {
 					nombreProp := strings.ToLower(comandoTemp.Propiedades[f].Nombre)
 					if nombreProp == "-name" {
+
+						if strings.Contains(comandoTemp.Propiedades[f].Valor, "\"") {
+							conc := strings.Split(comandoTemp.Propiedades[f].Valor, "\"")
+							mkgrp.setName = conc[1]
+
+						} else {
+
+							mkgrp.setName = comandoTemp.Propiedades[f].Valor
+						}
 						flagName = false
-						mkgrp.setName = comandoTemp.Propiedades[f].Valor
+
 						break
 					}
 				}
@@ -449,8 +450,16 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				for f := 0; f < len(comandoTemp.Propiedades); f++ {
 					nombreProp := strings.ToLower(comandoTemp.Propiedades[f].Nombre)
 					if nombreProp == "-name" {
+						if strings.Contains(comandoTemp.Propiedades[f].Valor, "\"") {
+							conc := strings.Split(comandoTemp.Propiedades[f].Valor, "\"")
+							rmgrp.setName = conc[1]
+
+						} else {
+
+							rmgrp.setName = comandoTemp.Propiedades[f].Valor
+						}
 						flagName = false
-						rmgrp.setName = comandoTemp.Propiedades[f].Valor
+
 						break
 					}
 				}
@@ -481,11 +490,29 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				for f := 0; f < len(comandoTemp.Propiedades); f++ {
 					nombreProp := strings.ToLower(comandoTemp.Propiedades[f].Nombre)
 					if nombreProp == "-grp" {
+
+						if strings.Contains(comandoTemp.Propiedades[f].Valor, "\"") {
+							conc := strings.Split(comandoTemp.Propiedades[f].Valor, "\"")
+							mkusr.setGrp = conc[1]
+
+						} else {
+
+							mkusr.setGrp = comandoTemp.Propiedades[f].Valor
+						}
 						flagGrp = false
-						mkusr.setGrp = comandoTemp.Propiedades[f].Valor
+
 					} else if nombreProp == "-usuario" {
+						if strings.Contains(comandoTemp.Propiedades[f].Valor, "\"") {
+							conc := strings.Split(comandoTemp.Propiedades[f].Valor, "\"")
+							mkusr.setUsuario = conc[1]
+
+						} else {
+
+							mkusr.setUsuario = comandoTemp.Propiedades[f].Valor
+						}
+
 						flagUser = false
-						mkusr.setUsuario = comandoTemp.Propiedades[f].Valor
+
 					} else if nombreProp == "-pwd" {
 						flagPass = false
 						mkusr.setPassword = comandoTemp.Propiedades[f].Valor
@@ -517,8 +544,17 @@ func listaComandosValidos(ListaComandos *list.List, listaDiscos *[100]Mount) {
 				for f := 0; f < len(comandoTemp.Propiedades); f++ {
 					nombreProp := strings.ToLower(comandoTemp.Propiedades[f].Nombre)
 					if nombreProp == "-usuario" {
+
+						if strings.Contains(comandoTemp.Propiedades[f].Valor, "\"") {
+							conc := strings.Split(comandoTemp.Propiedades[f].Valor, "\"")
+							rmusr.setName = conc[1]
+
+						} else {
+
+							rmusr.setName = comandoTemp.Propiedades[f].Valor
+						}
 						flagName = false
-						rmusr.setName = comandoTemp.Propiedades[f].Valor
+
 						break
 					}
 				}

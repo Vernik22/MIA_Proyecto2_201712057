@@ -6,14 +6,18 @@ mkfs -id=571a
 login -usuario=root -password=123 -id=571a
 pause
 #CREACION DE USUARIOS
-mkgrp -name=Compi2
-Mkusr -usuario=user1 -grp=root -pwd=user1
-Mkusr -usuario=user2 -grp=Compi2 -pwd=user2
-Mkusr -usuario=user3 -grp=Compi2 -pwd=user3
-Mkusr -usuario=user4 -grp=Compi2 -pwd=user4
+mkgrp -name="Compi 2"
+mkgrp -naMe=Archivos
+mkgrp -NamE=Arqui
+mkgrp -name="Orga"
+Mkusr -usuario="user1" -grp=root -pwd=user1
+Mkusr -usuario=user2 -grp="Compi 2" -pwd=user2
+Mkusr -usuario=user3 -grp="Compi 2" -pwd=user3
+Mkusr -usuario=user4 -grp="Compi 2" -pwd=user4
 mkgrp -name=usuarios
 mkgrp -name=grupo1
 mkusr -usuario=user1 -pwd=usu -grp=usuarios
+rmgrp -name=Arqui
 pause
 rep -id=571a -path=/home/vernik/Escritorio/hola/rep1.pdf -name=disk
 rep -id=571a -path=/home/vernik/Escritorio/hola/rep2.pdf -name=tree
