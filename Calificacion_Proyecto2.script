@@ -1,10 +1,6 @@
-#Calificacion MIA 2022 - PROYECTO 2
 
-# --- PARTE 1 ---
-
-#CREACION DE DISCOS
 mkdisk -size=112 -unit=M -path=/home/parte2/disco.dk
-mkdisk -size=1 -path="/home/parte1/eliminar.dk"
+mkdisk -size=1 -path=/home/parte1/eliminar.dk
 
 pause
 
@@ -12,7 +8,7 @@ pause
 #Debe de dar error por que no existe disco con ese nombre
 rmdisk -path="/home/a eliminar disco/no_existo.dk"
 
-rmdisk -path="/home/parte1/eliminar.dk"
+rmdisk -path=/home/parte1/eliminar.dk
 
 pause
 
@@ -52,7 +48,7 @@ mkfs -type=fast -id=571a
 pause
 
 #REPORTES INICIALES
-rep -id=571a -Path="/home/parte2/reportes/tree_1.pdf" -name=tree
+rep -id=571a -Path=/home/parte2/reportes/tree_1.pdf -name=tree
 
 pause
 
@@ -67,7 +63,7 @@ Login -password=123 -usuario=root -id=571a
 
 pause
 
-#CREACION DE GRUPOS
+#CREACION DE GRUPOS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
 mkgrp -naMe=Archivos
 mkgrp -NamE=Arqui
 mkgrp -name="Compi 2"
@@ -80,7 +76,7 @@ rmgrp -name=Arqui
 pause
 
 #REPORTES FILE
-rep -id=571a -Path="/home/parte2/reportes/users_1.txt" -ruta="/users.txt" -name=file
+rep -id=571a -Path=/home/parte2/reportes/users_1.txt -ruta=/users.txt -name=file
 
 pause
 
@@ -97,7 +93,7 @@ rmusr -usuario=user3
 pause
 
 #REPORTES FILE
-rep -id=571a -Path="/home/parte2/reportes/users_2.txt" -ruta="/users.txt" -name=file
+rep -id=571a -Path=/home/parte2/reportes/users_2.txt -ruta=/users.txt -name=file
 
 pause
 
@@ -112,7 +108,7 @@ Mkdir -path=/home/archivos/mia/carpeta2/a3
 pause
 
 #REPORTES TREE
-rep -id=571a -Path="/home/parte2/reportes/tree_2.pdf" -name=tree
+rep -id=571a -Path=/home/parte2/reportes/tree_2.pdf -name=tree
 
 pause
 
@@ -122,27 +118,27 @@ mkfile -path="/home/b2.txt" -size=15
 mkfile -path="/home/b3.txt" -size=15
 
 #Debe dar error ruta no existe
-mkfile -path="/home/Noexiste/c1.txt" -size=25
+mkfile -path=/home/Noexiste/c1.txt -size=25
 
 #Debe dar error size negativo
-mkfile -path="/home/d1.txt" -size=-25
+mkfile -path=/home/d1.txt -size=-25
 
 pause
 
 #REPORTES TREE
-rep -id=571a -Path="/home/parte2/reportes/tree_3.pdf" -name=tree
+rep -id=571a -Path=/home/parte2/reportes/tree_3.pdf -name=tree
 
 pause
 
-mkfile -cont="/home/ec2-user/bcont.txt" -path="/home/entrada.txt"
+mkfile -cont=/home/ec2-user/bcont.txt -path=/home/entrada.txt
 
 pause
 
 #REPORTES TREE
-rep -id=571a -Path="/home/parte2/reportes/tree_4.pdf" -name=tree
+rep -id=571a -Path=/home/parte2/reportes/tree_4.pdf -name=tree
 
 #REPORTES FILE
-rep -id=571a -Path="/home/parte2/reportes/users_3.txt" -ruta="/home/entrada.txt" -name=file
+rep -id=571a -Path=/home/parte2/reportes/users_3.txt -ruta=/home/entrada.txt -name=file
 
 pause
 
